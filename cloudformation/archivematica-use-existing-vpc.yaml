@@ -1,0 +1,533 @@
+---
+  Description: "Digital Preservation - Archivematica (Dev)"
+  Parameters:
+    VpcId:
+      Type: AWS::EC2::VPC::Id
+      Description: "Select the VPC to deploy this solution in."
+    PublicSubnet1:
+      Type: AWS::EC2::Subnet::Id
+      Description: "Select a Public Subnet within the VPC to deploy the Application Load Balancer."
+    PublicSubnet2:
+      Type: AWS::EC2::Subnet::Id
+      Description: "Select a second Public Subnet within the VPC to deploy the Application Load Balancer."
+    PrivateSubnet:
+      Type: AWS::EC2::Subnet::Id
+      Description: "Select a Private Subnet within the VPC to deploy the Archivematica EC2 Instance."
+  Metadata:
+    AWS::CloudFormation::Interface:
+      ParameterGroups:
+        -
+          Label:
+            default: "Network Configuration"
+          Parameters:
+            - VpcId
+            - PrivateSubnet
+            - PublicSubnet1
+            - PublicSubnet2
+      ParameterLabels:
+        VpcId:
+          default: "Virtual Private Cloud (VPC)"
+        PrivateSubnet:
+          default: "Private Subnet"
+        PublicSubnet1:
+          default: "Public Subnet 1"
+        PublicSubnet2:
+          default: "Public Subnet 2"
+  Resources: 
+    ArchivematicaKMSKey7855211A: 
+      Type: "AWS::KMS::Key"
+      Properties: 
+        KeyPolicy: 
+          Statement: 
+            - 
+              Action: "kms:*"
+              Effect: "Allow"
+              Principal: 
+                AWS: 
+                  Fn::Join: 
+                    - ""
+                    - 
+                      - "arn:"
+                      - 
+                        Ref: "AWS::Partition"
+                      - ":iam::"
+                      - 
+                        Ref: "AWS::AccountId"
+                      - ":root"
+              Resource: "*"
+          Version: "2012-10-17"
+        Description: "KMS key for encrypting Archivematica S3 Storage Bucket"
+        EnableKeyRotation: true
+        PendingWindowInDays: 7
+      UpdateReplacePolicy: "Delete"
+      DeletionPolicy: "Delete"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:KMS:Key/Resource"
+    ArchivematicaKMSKeyAliasAC2E027F: 
+      Type: "AWS::KMS::Alias"
+      Properties: 
+        AliasName: "alias/archivematica2"
+        TargetKeyId: 
+          Fn::GetAtt: 
+            - "ArchivematicaKMSKey7855211A"
+            - "Arn"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:KMS:Key/Alias/Resource"
+    ArchivematicaS3BucketF27FBD3D: 
+      Type: "AWS::S3::Bucket"
+      Properties: 
+        BucketEncryption: 
+          ServerSideEncryptionConfiguration: 
+            - 
+              BucketKeyEnabled: true
+              ServerSideEncryptionByDefault: 
+                KMSMasterKeyID: 
+                  Fn::GetAtt: 
+                    - "ArchivematicaKMSKey7855211A"
+                    - "Arn"
+                SSEAlgorithm: "aws:kms"
+        BucketName: 
+          Fn::Join: 
+            - ""
+            - 
+              - "archivematica-"
+              - 
+                Ref: "AWS::AccountId"
+              - "-dev"
+        PublicAccessBlockConfiguration: 
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+      UpdateReplacePolicy: "Delete"
+      DeletionPolicy: "Delete"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:S3Bucket/Resource"
+    ArchivematicaS3BucketPolicyBC3155AF: 
+      Type: "AWS::S3::BucketPolicy"
+      Properties: 
+        Bucket: 
+          Ref: "ArchivematicaS3BucketF27FBD3D"
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: "s3:*"
+              Condition: 
+                Bool: 
+                  aws:SecureTransport: "false"
+              Effect: "Deny"
+              Principal: 
+                AWS: "*"
+              Resource: 
+                - 
+                  Fn::GetAtt: 
+                    - "ArchivematicaS3BucketF27FBD3D"
+                    - "Arn"
+                - 
+                  Fn::Join: 
+                    - ""
+                    - 
+                      - 
+                        Fn::GetAtt: 
+                          - "ArchivematicaS3BucketF27FBD3D"
+                          - "Arn"
+                      - "/*"
+          Version: "2012-10-17"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:S3Bucket/Policy/Resource"
+    ArchivematicaEC2SG0EB1EBA6: 
+      Type: "AWS::EC2::SecurityGroup"
+      Properties: 
+        GroupDescription: "CdkArchivematicaStackDevVpc/Archivematica:EC2:SG"
+        SecurityGroupEgress: 
+          - 
+            CidrIp: "0.0.0.0/0"
+            Description: "Allow all outbound traffic by default"
+            IpProtocol: "-1"
+        VpcId: 
+          Ref: "VpcId"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:SG/Resource"
+    ArchivematicaEC2SGfromCdkArchivematicaStackDevVpcArchivematicaALBSGDD8303BE812EA3A120: 
+      Type: "AWS::EC2::SecurityGroupIngress"
+      Properties: 
+        IpProtocol: "tcp"
+        Description: "Allow 81 inbound from ALB (Dashboard)"
+        FromPort: 81
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaEC2SG0EB1EBA6"
+            - "GroupId"
+        SourceSecurityGroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        ToPort: 81
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:SG/from CdkArchivematicaStackDevVpcArchivematicaALBSGDD8303BE:81"
+    ArchivematicaEC2SGfromCdkArchivematicaStackDevVpcArchivematicaALBSGDD8303BE800193CC9339: 
+      Type: "AWS::EC2::SecurityGroupIngress"
+      Properties: 
+        IpProtocol: "tcp"
+        Description: "Allow 8001 inbound from ALB (Storage Service)"
+        FromPort: 8001
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaEC2SG0EB1EBA6"
+            - "GroupId"
+        SourceSecurityGroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        ToPort: 8001
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:SG/from CdkArchivematicaStackDevVpcArchivematicaALBSGDD8303BE:8001"
+    ArchivematicaALBSGDD64F5E3: 
+      Type: "AWS::EC2::SecurityGroup"
+      Properties: 
+        GroupDescription: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG"
+        VpcId: 
+          Ref: "VpcId"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG/Resource"
+    ArchivematicaALBSGtoCdkArchivematicaStackDevVpcArchivematicaEC2SG78D6AC16817834D4E6: 
+      Type: "AWS::EC2::SecurityGroupEgress"
+      Properties: 
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        IpProtocol: "tcp"
+        Description: "Allow 81 inbound from ALB (Dashboard)"
+        DestinationSecurityGroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaEC2SG0EB1EBA6"
+            - "GroupId"
+        FromPort: 81
+        ToPort: 81
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG/to CdkArchivematicaStackDevVpcArchivematicaEC2SG78D6AC16:81"
+    ArchivematicaALBSGtoCdkArchivematicaStackDevVpcArchivematicaEC2SG78D6AC168001916C08E5: 
+      Type: "AWS::EC2::SecurityGroupEgress"
+      Properties: 
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        IpProtocol: "tcp"
+        Description: "Allow 8001 inbound from ALB (Storage Service)"
+        DestinationSecurityGroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaEC2SG0EB1EBA6"
+            - "GroupId"
+        FromPort: 8001
+        ToPort: 8001
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG/to CdkArchivematicaStackDevVpcArchivematicaEC2SG78D6AC16:8001"
+    ArchivematicaALBSGfromIndirectPeer800115E94141: 
+      Type: "AWS::EC2::SecurityGroupIngress"
+      Properties: 
+        IpProtocol: "tcp"
+        CidrIp: "10.0.0.0/16"
+        Description: "Allow 8001 inbound from Restricted IP Range (Storage Service)"
+        FromPort: 8001
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        ToPort: 8001
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG/from {IndirectPeer}:8001"
+    ArchivematicaALBSGfromIndirectPeer281C7BE0587: 
+      Type: "AWS::EC2::SecurityGroupIngress"
+      Properties: 
+        IpProtocol: "tcp"
+        CidrIp: "10.0.0.0/16"
+        Description: "Allow 81 inbound from Restricted IP Range (Dashboard)"
+        FromPort: 81
+        GroupId: 
+          Fn::GetAtt: 
+            - "ArchivematicaALBSGDD64F5E3"
+            - "GroupId"
+        ToPort: 81
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:SG/from '{IndirectPeer2}':81"
+    ArchivematicaIAMInstanceProfileD6D74639: 
+      Type: "AWS::IAM::Role"
+      Properties: 
+        AssumeRolePolicyDocument: 
+          Statement: 
+            - 
+              Action: "sts:AssumeRole"
+              Effect: "Allow"
+              Principal: 
+                Service: "ec2.amazonaws.com"
+          Version: "2012-10-17"
+        ManagedPolicyArns: 
+          - 
+            Fn::Join: 
+              - ""
+              - 
+                - "arn:"
+                - 
+                  Ref: "AWS::Partition"
+                - ":iam::aws:policy/AmazonSSMManagedInstanceCore"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:IAM:InstanceProfile/Resource"
+    ArchivematicaIAMInstanceProfileDefaultPolicyC1DE01C5: 
+      Type: "AWS::IAM::Policy"
+      Properties: 
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: 
+                - "s3:Abort*"
+                - "s3:DeleteObject*"
+                - "s3:GetBucket*"
+                - "s3:GetObject*"
+                - "s3:List*"
+                - "s3:PutObject"
+                - "s3:PutObjectLegalHold"
+                - "s3:PutObjectRetention"
+                - "s3:PutObjectTagging"
+                - "s3:PutObjectVersionTagging"
+              Effect: "Allow"
+              Resource: 
+                - 
+                  Fn::GetAtt: 
+                    - "ArchivematicaS3BucketF27FBD3D"
+                    - "Arn"
+                - 
+                  Fn::Join: 
+                    - ""
+                    - 
+                      - 
+                        Fn::GetAtt: 
+                          - "ArchivematicaS3BucketF27FBD3D"
+                          - "Arn"
+                      - "/*"
+            - 
+              Action: 
+                - "kms:Decrypt"
+                - "kms:DescribeKey"
+                - "kms:Encrypt"
+                - "kms:GenerateDataKey*"
+                - "kms:ReEncrypt*"
+              Effect: "Allow"
+              Resource: 
+                Fn::GetAtt: 
+                  - "ArchivematicaKMSKey7855211A"
+                  - "Arn"
+          Version: "2012-10-17"
+        PolicyName: "ArchivematicaIAMInstanceProfileDefaultPolicyC1DE01C5"
+        Roles: 
+          - 
+            Ref: "ArchivematicaIAMInstanceProfileD6D74639"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:IAM:InstanceProfile/DefaultPolicy/Resource"
+    ArchivematicaEC2InstanceInstanceProfileDE708029: 
+      Type: "AWS::IAM::InstanceProfile"
+      Properties: 
+        Roles: 
+          - 
+            Ref: "ArchivematicaIAMInstanceProfileD6D74639"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:Instance/InstanceProfile"
+    ArchivematicaEC2Instance0CBB5FAC: 
+      Type: "AWS::EC2::Instance"
+      Properties: 
+        AvailabilityZone: 
+          Fn::Select: 
+            - 0
+            - 
+              Fn::GetAZs: ""
+        BlockDeviceMappings: 
+          - 
+            DeviceName: "/dev/sda1"
+            Ebs: 
+              DeleteOnTermination: true
+              Encrypted: true
+              VolumeSize: 10
+              VolumeType: "gp3"
+          - 
+            DeviceName: "/dev/sdf"
+            Ebs: 
+              DeleteOnTermination: true
+              Encrypted: true
+              Iops: 16000
+              VolumeSize: 500
+              VolumeType: "gp3"
+          - 
+            DeviceName: "/dev/sdg"
+            Ebs: 
+              DeleteOnTermination: true
+              Encrypted: true
+              VolumeSize: 10
+              VolumeType: "gp3"
+          - 
+            DeviceName: "/dev/sdh"
+            Ebs: 
+              DeleteOnTermination: true
+              Encrypted: true
+              VolumeSize: 10
+              VolumeType: "gp3"
+        IamInstanceProfile: 
+          Ref: "ArchivematicaEC2InstanceInstanceProfileDE708029"
+        ImageId: 
+          Fn::FindInMap: 
+            - "ArchivematicaEC2InstanceAmiMapF66B29CE"
+            - 
+              Ref: "AWS::Region"
+            - "ami"
+        InstanceType: "c6i.2xlarge"
+        LaunchTemplate: 
+          LaunchTemplateName: "CdkArchivematicaStackDevVpcArchivematicaEC2InstanceLaunchTemplateF1928967"
+          Version: 
+            Fn::GetAtt: 
+              - "ArchivematicaEC2InstanceLaunchTemplateCA6FDC56"
+              - "LatestVersionNumber"
+        Monitoring: true
+        SecurityGroupIds: 
+          - 
+            Fn::GetAtt: 
+              - "ArchivematicaEC2SG0EB1EBA6"
+              - "GroupId"
+        SubnetId:
+          Ref: "PrivateSubnet"
+        Tags: 
+          - 
+            Key: "Name"
+            Value: "CdkArchivematicaStackDevVpc/Archivematica:EC2:Instance"
+        UserData: 
+          Fn::Base64: "#!/bin/bash\n\n# Install the Amazon SSM Agent\ntouch /tmp/bootstrap_start\nsudo yum -y update\nsudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm\n\n# Format EBS Volumes\nsudo yum install -y xfsprogs nvme-cli\nsudo mkfs -t xfs /dev/nvme1n1\nsudo mkfs -t xfs /dev/nvme2n1\nsudo mkfs -t xfs /dev/nvme3n1\n\n# Create Archivematica directories for mount points\nsudo mkdir /var/archivematica\nsudo mkdir /var/lib/mysql\nsudo mkdir /var/lib/elasticsearch\nsudo cp /etc/fstab /etc/fstab.orig\n\n# Identify NVME Device to EBS Volume Mapping - This is used to mount core service components on individual GP3 NVME EBS Volumes\n# Find what NVME Device is mapped to what block device (sdf=/var/archivematica, sdg=/var/lib/mysql, sdh=/var/lib/elasticsearch)\nnvme1=$(sudo nvme id-ctrl --raw-binary /dev/nvme1n1 | cut -c3073-3104 | xargs)\nnvme1_uuid=$(sudo blkid -s UUID -o value /dev/nvme1n1)\nnvme2=$(sudo nvme id-ctrl --raw-binary /dev/nvme2n1 | cut -c3073-3104 | xargs)\nnvme2_uuid=$(sudo blkid -s UUID -o value /dev/nvme2n1)\nnvme3=$(sudo nvme id-ctrl --raw-binary /dev/nvme3n1 | cut -c3073-3104 | xargs)\nnvme3_uuid=$(sudo blkid -s UUID -o value /dev/nvme3n1)\n\ntouch /tmp/bootstrap_nvme_map_start\n\ncase $nvme1 in\n    sdf)\n        sudo mount /dev/nvme1n1 /var/archivematica\n        echo \"UUID=$nvme1_uuid   /var/archivematica  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdh)\n        sudo mount /dev/nvme1n1 /var/lib/elasticsearch\n        echo \"UUID=$nvme1_uuid   /var/lib/elasticsearch  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdg)\n        sudo mount /dev/nvme1n1 /var/lib/mysql\n        echo \"UUID=$nvme1_uuid   /var/lib/mysql  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\nesac\n\ncase $nvme2 in\n    sdf)\n        sudo mount /dev/nvme2n1 /var/archivematica\n        echo \"UUID=$nvme2_uuid   /var/archivematica  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdh)\n        sudo mount /dev/nvme2n1 /var/lib/elasticsearch\n        echo \"UUID=$nvme2_uuid   /var/lib/elasticsearch  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdg)\n        sudo mount /dev/nvme2n1 /var/lib/mysql\n        echo \"UUID=$nvme2_uuid   /var/lib/mysql  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\nesac\n\ncase $nvme3 in\n    sdf)\n        sudo mount /dev/nvme3n1 /var/archivematica\n        echo \"UUID=$nvme3_uuid   /var/archivematica  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdh)\n        sudo mount /dev/nvme3n1 /var/lib/elasticsearch\n        echo \"UUID=$nvme3_uuid   /var/lib/elasticsearch  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\n    sdg)\n        sudo mount /dev/nvme3n1 /var/lib/mysql\n        echo \"UUID=$nvme3_uuid   /var/lib/mysql  xfs  defaults,nofail  0  2\" >> /etc/fstab\n        ;;\nesac\n\ntouch /tmp/bootstrap_mounts_done\n\n# Allow Nginx to use ports 81 and 8001\nsudo semanage port -m -t http_port_t -p tcp 81\nsudo semanage port -a -t http_port_t -p tcp 8001\n\n# Allow Nginx to connect the MySQL server and Gunicorn backends\nsudo setsebool -P httpd_can_network_connect_db=1\nsudo setsebool -P httpd_can_network_connect=1\n\n# Allow Nginx to change system limits\nsudo setsebool -P httpd_setrlimit 1\n\n# Install Extra Packages for Enterprise Linux (EPEL)\nsudo yum install -y epel-release\n\n# Set ElasticSearch repo\nsudo -u root rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch\nsudo -u root bash -c 'cat << EOF > /etc/yum.repos.d/elasticsearch.repo\n[elasticsearch-6.x]\nname=Elasticsearch repository for 6.x packages\nbaseurl=https://artifacts.elastic.co/packages/6.x/yum\ngpgcheck=1\ngpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch\nenabled=1\nautorefresh=1\ntype=rpm-md\nEOF'\n\n# Set Archivematica repos\nsudo -u root bash -c 'cat << EOF > /etc/yum.repos.d/archivematica.repo\n[archivematica]\nname=archivematica\nbaseurl=https://packages.archivematica.org/1.13.x/centos\ngpgcheck=1\ngpgkey=https://packages.archivematica.org/1.13.x/key.asc\nenabled=1\nEOF'\n\nsudo -u root bash -c 'cat << EOF > /etc/yum.repos.d/archivematica-extras.repo\n[archivematica-extras]\nname=archivematica-extras\nbaseurl=https://packages.archivematica.org/1.13.x/centos-extras\ngpgcheck=1\ngpgkey=https://packages.archivematica.org/1.13.x/key.asc\nenabled=1\nEOF'\n\n# Enable Services\nsudo -u root yum install -y java-1.8.0-openjdk-headless elasticsearch mariadb-server gearmand\nsudo -u root systemctl enable elasticsearch\nsudo -u root systemctl start elasticsearch\nsudo -u root systemctl enable mariadb\nsudo -u root systemctl start mariadb\nsudo -u root systemctl enable gearmand\nsudo -u root systemctl start gearmand\n\n# Create Local MariaDB Database\nsudo -H -u root mysql -hlocalhost -uroot -e \"DROP DATABASE IF EXISTS MCP; CREATE DATABASE MCP CHARACTER SET utf8 COLLATE utf8_unicode_ci;\"\nsudo -H -u root mysql -hlocalhost -uroot -e \"DROP DATABASE IF EXISTS SS; CREATE DATABASE SS CHARACTER SET utf8 COLLATE utf8_unicode_ci;\"\n\n# Create Archivematica User in Maria DB Database (Change the 'demo' password) and grant permissions\nsudo -H -u root mysql -hlocalhost -uroot -e \"CREATE USER 'archivematica'@'localhost' IDENTIFIED BY 'demo';\"\nsudo -H -u root mysql -hlocalhost -uroot -e \"GRANT ALL ON MCP.* TO 'archivematica'@'localhost';\"\nsudo -H -u root mysql -hlocalhost -uroot -e \"GRANT ALL ON SS.* TO 'archivematica'@'localhost';\"\n\n# Install Archivematica Storage Service\nsudo -u root yum install -y python-pip archivematica-storage-service\n\n# Migrate the DB with the archivematica user\nsudo -u archivematica bash -c \" \\\nset -a -e -x\nsource /etc/sysconfig/archivematica-storage-service\ncd /usr/lib/archivematica/storage-service\n/usr/share/archivematica/virtualenvs/archivematica-storage-service/bin/python manage.py migrate\";\n\n# Enable services\nsudo -u root systemctl enable archivematica-storage-service\nsudo -u root systemctl start archivematica-storage-service\nsudo -u root systemctl enable nginx\nsudo -u root systemctl start nginx\nsudo -u root systemctl enable rngd\nsudo -u root systemctl start rngd\n\n# Install Archivematica Dashboard and MCP Server\nsudo -u root yum install -y archivematica-common archivematica-mcp-server archivematica-dashboard\n\nsudo -u archivematica bash -c \" \\\nset -a -e -x\nsource /etc/sysconfig/archivematica-dashboard\ncd /usr/share/archivematica/dashboard\n/usr/share/archivematica/virtualenvs/archivematica/bin/python manage.py migrate\n\";\n\nsudo -u root systemctl enable archivematica-mcp-server\nsudo -u root systemctl start archivematica-mcp-server\nsudo -u root systemctl enable archivematica-dashboard\nsudo -u root systemctl start archivematica-dashboard\n\nsudo -u root systemctl restart nginx\n\n# Install MCP Client\nsudo -u root yum install -y archivematica-mcp-client\nsudo -u root sed -i 's/^#TCPSocket/TCPSocket/g' /etc/clamd.d/scan.conf\nsudo -u root sed -i 's/^Example//g' /etc/clamd.d/scan.conf\nsudo -u root systemctl enable archivematica-mcp-client\nsudo -u root systemctl start archivematica-mcp-client\nsudo -u root systemctl enable fits-nailgun\nsudo -u root systemctl start fits-nailgun\nsudo -u root systemctl enable clamd@scan\nsudo -u root systemctl start clamd@scan\nsudo -u root systemctl restart archivematica-dashboard\nsudo -u root systemctl restart archivematica-mcp-server\n\n# Create Archivematica Space and Location Directories\nsudo mkdir /var/archivematica/sharedDirectory/s3\nsudo mkdir /var/archivematica/sharedDirectory/s3/staging\nsudo chown archivematica:archivematica /var/archivematica/sharedDirectory/s3\nsudo chown archivematica:archivematica /var/archivematica/sharedDirectory/s3/staging\nsudo chmod 750 /var/archivematica/sharedDirectory/s3\nsudo chmod 750 /var/archivematica/sharedDirectory/s3/staging\n\n# Create a file when the bootstrap script has finished running \ntouch /tmp/bootstrap_complete"
+      DependsOn: 
+        - "ArchivematicaIAMInstanceProfileDefaultPolicyC1DE01C5"
+        - "ArchivematicaIAMInstanceProfileD6D74639"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:Instance/Resource"
+    ArchivematicaEC2InstanceLaunchTemplateCA6FDC56: 
+      Type: "AWS::EC2::LaunchTemplate"
+      Properties: 
+        LaunchTemplateData: 
+          MetadataOptions: 
+            HttpTokens: "required"
+        LaunchTemplateName: "CdkArchivematicaStackDevVpcArchivematicaEC2InstanceLaunchTemplateF1928967"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:EC2:Instance/LaunchTemplate"
+    ArchivematicaALB4666F19D: 
+      Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+      Properties: 
+        LoadBalancerAttributes: 
+          - 
+            Key: "deletion_protection.enabled"
+            Value: "false"
+          - 
+            Key: "idle_timeout.timeout_seconds"
+            Value: "3600"
+        Scheme: "internet-facing"
+        SecurityGroups: 
+          - 
+            Fn::GetAtt: 
+              - "ArchivematicaALBSGDD64F5E3"
+              - "GroupId"
+        Subnets: 
+          - Ref: "PublicSubnet1"
+          - Ref: "PublicSubnet2"
+        Type: "application"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB/Resource"
+    ArchivematicaALBArchivematicaALBListenerDashboard8F530F0B: 
+      Type: "AWS::ElasticLoadBalancingV2::Listener"
+      Properties: 
+        DefaultActions: 
+          - 
+            TargetGroupArn: 
+              Ref: "ArchivematicaALBTargetGroup1A8D908AB"
+            Type: "forward"
+        LoadBalancerArn: 
+          Ref: "ArchivematicaALB4666F19D"
+        Port: 81
+        Protocol: "HTTP"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB/Archivematica:ALB:Listener:Dashboard/Resource"
+    ArchivematicaALBArchivematicaALBListenerStorageService70C212B1: 
+      Type: "AWS::ElasticLoadBalancingV2::Listener"
+      Properties: 
+        DefaultActions: 
+          - 
+            TargetGroupArn: 
+              Ref: "ArchivematicaALBTargetGroup2D0B85C49"
+            Type: "forward"
+        LoadBalancerArn: 
+          Ref: "ArchivematicaALB4666F19D"
+        Port: 8001
+        Protocol: "HTTP"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB/Archivematica:ALB:Listener:StorageService/Resource"
+    ArchivematicaALBTargetGroup1A8D908AB: 
+      Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+      Properties: 
+        HealthCheckIntervalSeconds: 30
+        HealthCheckPath: "/"
+        HealthyThresholdCount: 5
+        Matcher: 
+          HttpCode: "200,302"
+        Port: 81
+        Protocol: "HTTP"
+        TargetGroupAttributes: 
+          - 
+            Key: "stickiness.enabled"
+            Value: "false"
+        Targets: 
+          - 
+            Id: 
+              Ref: "ArchivematicaEC2Instance0CBB5FAC"
+            Port: 81
+        TargetType: "instance"
+        UnhealthyThresholdCount: 2
+        VpcId: 
+          Ref: "VpcId"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:TargetGroup1/Resource"
+    ArchivematicaALBTargetGroup2D0B85C49: 
+      Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+      Properties: 
+        HealthCheckIntervalSeconds: 30
+        HealthCheckPath: "/"
+        HealthyThresholdCount: 5
+        Matcher: 
+          HttpCode: "200,302"
+        Port: 8001
+        Protocol: "HTTP"
+        TargetGroupAttributes: 
+          - 
+            Key: "stickiness.enabled"
+            Value: "false"
+        Targets: 
+          - 
+            Id: 
+              Ref: "ArchivematicaEC2Instance0CBB5FAC"
+            Port: 8001
+        TargetType: "instance"
+        UnhealthyThresholdCount: 2
+        VpcId: 
+          Ref: "VpcId"
+      Metadata: 
+        aws:cdk:path: "CdkArchivematicaStackDevVpc/Archivematica:ALB:TargetGroup2/Resource"
+  Mappings: 
+    ArchivematicaEC2InstanceAmiMapF66B29CE: 
+      us-west-2: 
+        ami: "ami-08c191625cfb7ee61"
+      us-east-1: 
+        ami: "ami-002070d43b0a4f171"
+      us-east-2: 
+        ami: "ami-05a36e1502605b4aa"
+  Outputs: 
+    ALBDNS: 
+      Description: "DNS Name of the Application Load Balancer"
+      Value: 
+        Fn::GetAtt: 
+          - "ArchivematicaALB4666F19D"
+          - "DNSName"
+      Export: 
+        Name: "ApplicationLoadBalancer-DNSName2"
