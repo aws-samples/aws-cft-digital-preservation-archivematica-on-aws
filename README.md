@@ -46,6 +46,9 @@ You are responsible for the cost of the AWS services used while running this sol
 
 ### Installation Procedure Time
 Up to 90 minutes to complete the installation and configuration of Archivematica.
+    - ~5 minutes - CloudFormation Stack deployment time
+    - ~30-45 minutes - Archivematica automatic bootstrap process
+    - ~15 minutes - Archivematica Amazon S3 integration configuration
 
 ### Pre-Install 
 
