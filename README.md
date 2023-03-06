@@ -85,7 +85,7 @@ sudo -u archivematica bash -c " \
   ";
 ```
 6. In your browser, complete the Archivematica installation wizard by navigating to the Archivematica Dashboard @ ***http://ALB-URL:81/***. Use ***http://ALB-URL:81/*** for for Public URL configuration option.
-7. In your browser, Login to the Archivematica Storage Service by navigating to ***http://ALB-URL:8001/***. Navigate to the Administration -> Users menu and select your super-user. Copy the API key from the user.
+7. In your browser, Login to the Archivematica Storage Service by navigating to ***http://ALB-URL:8001/***. Navigate to the Administration -> Users menu and select the super-user you created in Step #5. Copy the API key from the user.
 8. In your browser, Go back to the Archivematica Dashboard @ ***http://ALB-URL:81/*** and configure Storage Settings with the API Key and Storage Service super-user name. You can locate Storage Settings in Administration, under the General tab. This allows the Dashboard to send requests to the Storage Service for processing. You should also use ***http://localhost:8001/*** for the Storage Service URL.
 9. In your browser, Login to the Archivematica Storage Service UI by navigating to ***http://ALB-URL:8001/*** and configure a Storage Space and AIP Storage/Transfer Source Locations. The AIP Storage and Transfer Source Locations should point to a specific S3 Bucket prefix (relative path).
     - ***Storage Space Configuration (Amazon S3)***
