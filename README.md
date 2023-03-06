@@ -4,7 +4,7 @@
 ## Overview
 Archivematica provides an integrated suite of free and open-source tools that allows users to process digital objects from ingest to archival storage and access in compliance with the ISO-OAIS functional model and other digital preservation standards and best practices. All of the Archivematica code and documentation is released under AGPL and Creative Commons open-source licenses.
 
-The CDK Application in this repository deploys Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a Well-Architected AWS environment and provides instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
+The CloudFormation Templates in this repository deploy Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a Well-Architected AWS environment. This repository also contains instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
 
 Libraries who have questions about this solution should [reach out to their institution's AWS representatives](https://aws.amazon.com/government-education/contact/?trkCampaign=ps&trk=ps_blog_body). Please note that AWS does not provide Archivematica-related services or support.
 
