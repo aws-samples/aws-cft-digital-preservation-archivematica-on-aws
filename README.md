@@ -44,6 +44,9 @@ You are responsible for the cost of the AWS services used while running this sol
 
 ## Install Instructions
 
+### Installation Procedure Time
+Up to 90 minutes to complete the installation and configuration of Archivematica.
+
 ### Pre-Install 
 
 1. Subscribe to the appropriate AWS-provided CentOS 7 Amazon Machine Image (AMI) for the AWS Region that Archivematica will be deployed in. This requires you to launch an EC2 instance with the required AMI. You should terminate the EC2 instance once you are subscribed to the CentOS7 AMI.
