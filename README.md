@@ -6,7 +6,7 @@ Archivematica provides an integrated suite of free and open-source tools that al
 
 The CDK Application in this repository deploys Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a Well-Architected AWS environment and provides instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
 
-Libraries who have questions about this solution should reach out to their institution's AWS representatives. Please note that AWS does not provide Archivematica-related services or support.
+Libraries who have questions about this solution should [reach out to their institution's AWS representatives](https://aws.amazon.com/government-education/contact/?trkCampaign=ps&trk=ps_blog_body). Please note that AWS does not provide Archivematica-related services or support.
 
 ## Security Disclaimer
 
