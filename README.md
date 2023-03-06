@@ -28,11 +28,7 @@ Libraries who have questions about this solution should [reach out to their inst
 - `1` Application Load Balancer + `2` Target Groups + `2` HTTP Listeners
 - `1` IAM Role (Archivematica Server's access to S3 Bucket and Systems Manager)
 - `1` EC2 Linux Instance - CentOS 7 on c6i.2xlarge - 8 vCPU/16 GB RAM (Archivematica Services)
-- `4` EC2 EBS Volumes 
-    - Root Volume (10 GB GP3 SSD) - / 
-    - MySQL Volume (10 GB GP3 SSD) - /var/lib/mysql 
-    - Elasticsearch Volume (10 GB GP3 SSD)  - /var/lib/elasticsearch 
-    - Archivematica Data Volume (500 GB GP3 SSD/16000 IOPS/125 Mbps Throughput)  - /var/archivematica
+- `4` EC2 EBS Volumes - Root Volume (10 GB GP3 SSD), MySQL Volume (10 GB GP3 SSD), Elasticsearch Volume (10 GB GP3 SSD), Archivematica Data Volume (500 GB GP3 SSD/16000 IOPS/125 Mbps Throughput)
         - NOTE: The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
 
 ## Estimated Costs
