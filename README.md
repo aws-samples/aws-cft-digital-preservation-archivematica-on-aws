@@ -43,8 +43,8 @@ You are responsible for the cost of the AWS services used while running this sol
 | [Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html)  | Tenancy (Shared Instances), Operating system (Linux), Workload (Consistent, Number of instances: 1), Advance EC2 instance (c6i.2xlarge - 8 vCPU + 16 GB RAM), Pricing strategy (On-Demand), General Purpose SSD (gp3) - IOPS (16000), General Purpose SSD (gp3) - Throughput (1000 MBps), Storage amount (530 GB), Snapshot Frequency (Daily), Amount changed per snapshot (10 GB) | $426.70 USD |
 | [Amazon Simple Storage Service](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | `25TB` [Amazon S3 Standard](https://aws.amazon.com/s3/storage-classes-infographic/) | $594.20 USD |
 | [Amazon Simple Storage Service](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | `100TB` [Amazon S3 Glacier Instant Retrieval](https://aws.amazon.com/s3/storage-classes-infographic/) | $470.34 USD |
-| [Amazon Virtual Private Cloud](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) | `2` NAT Gateway | $65.78 USD |
-| [Elastic Load Balancing](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html) | `1` Application Load Balancer | $24.62 USD |
+| [Amazon Virtual Private Cloud](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html) | `2` [NAT Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) | $65.78 USD |
+| [Elastic Load Balancing](https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html) | `1` [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html) | $24.62 USD |
 | **Total Monthly Cost** | | **$1,581.64 USD** | 
 
 ## Install Instructions
