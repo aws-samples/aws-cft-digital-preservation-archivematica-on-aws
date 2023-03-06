@@ -11,9 +11,10 @@ Libraries who have questions about this solution should [reach out to their inst
 ## Security Disclaimer
 
 - The sample code; software libraries; command line tools; proofs of concept; templates; or other related technology (including any of the foregoing that are provided by our personnel) is provided to you as AWS Content under the AWS Customer Agreement, or the relevant written agreement between you and AWS (whichever applies). You should not use this AWS Content in your production accounts, or on production or other critical data. You are responsible for testing, securing, and optimizing the AWS Content, such as sample code, as appropriate for production grade use based on your specific quality control practices and standards. Deploying AWS Content may incur AWS charges for creating or using AWS chargeable resources, such as running Amazon EC2 instances or using Amazon S3 storage.
-- We highly recommend that production deployments include [HTTPS Listeners](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html), [AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html), [Amazon GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html), [AWS Web Application Firewall](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html), and [AWS Systems Manager Patch Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html), and [User Authentication](https://www.archivematica.org/en/docs/archivematica-1.13/admin-manual/security/security/#authentication-security). You must import into or generate a certificate with [AWS Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html) to install a HTTPS Listener on an Application Load Balancer.
+- We highly recommend that production deployments include [HTTPS Listeners](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html), [AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html), [Amazon GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html), [AWS Web Application Firewall](https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html), and [AWS Systems Manager Patch Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-patch.html), and [User Authentication](https://www.archivematica.org/en/docs/archivematica-1.13/admin-manual/security/security/#authentication-security). 
+- You must import into or generate a certificate with [AWS Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html) to install a HTTPS Listener on an Application Load Balancer. Use throw-away passwords for all users if HTTPS Listeners are not enabled on the Application Load Balancer.
 - You should change the password needed to authenticate to the MariaDB database by following the instructions here: https://www.archivematica.org/en/docs/archivematica-1.13/admin-manual/security/security/
-- Use throw-away passwords for all users if HTTPS Listeners are not enabled on the Application Load Balancer.
+
 
 ## Reference Architecture
 
@@ -39,9 +40,9 @@ You are responsible for the cost of the AWS services used while running this sol
 
 | AWS Service      | Description | Cost per month |
 | ---------------- | ----------- | ----------- |
-| Amazon Elastic Compute Cloud  | Tenancy (Shared Instances), Operating system (Linux), Workload (Consistent, Number of instances: 1), Advance EC2 instance (c6i.2xlarge - 8 vCPU + 16 GB RAM), Pricing strategy (On-Demand), General Purpose SSD (gp3) - IOPS (16000), General Purpose SSD (gp3) - Throughput (1000 MBps), Storage amount (530 GB), Snapshot Frequency (Daily), Amount changed per snapshot (10 GB) | $426.70 USD |
-| Amazon Simple Storage Service | `25TB` Amazon S3 Standard | $594.20 USD |
-| Amazon Simple Storage Service | `100TB` Amazon S3 Glacier Instant Retrieval | $470.34 USD |
+| [Amazon Elastic Compute Cloud](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html)  | Tenancy (Shared Instances), Operating system (Linux), Workload (Consistent, Number of instances: 1), Advance EC2 instance (c6i.2xlarge - 8 vCPU + 16 GB RAM), Pricing strategy (On-Demand), General Purpose SSD (gp3) - IOPS (16000), General Purpose SSD (gp3) - Throughput (1000 MBps), Storage amount (530 GB), Snapshot Frequency (Daily), Amount changed per snapshot (10 GB) | $426.70 USD |
+| [Amazon Simple Storage Service](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | `25TB` Amazon S3 Standard | $594.20 USD |
+| [Amazon Simple Storage Service](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html) | `100TB` Amazon S3 Glacier Instant Retrieval | $470.34 USD |
 | Amazon Virtual Private Cloud | `2` NAT Gateway | $65.78 USD |
 | Elastic Load Balancing | `1` Application Load Balancer | $24.62 USD |
 | **Total Monthly Cost** | | **$1,581.64 USD** | 
