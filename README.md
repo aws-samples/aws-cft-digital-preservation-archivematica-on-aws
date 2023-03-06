@@ -66,7 +66,7 @@ You are responsible for the cost of the AWS services used while running this sol
 ### Archivematica Configuration
 
 Notes: 
-- Replace all appearances of ***ALB-URL*** in the following steps with the DNS name of the Application Load Balancer.
+- Replace all appearances of ***ALB-URL*** in the following steps with the DNS name of the Application Load Balancer. You can find the Application Load Balancer DNS name by checking the CloudFormation Stack's Outputs tab or through the EC2 service in the Load Balancers menu.
 
 You can complete the following steps while the EC2 instance is still being bootstrapped:
 1. In the AWS Console, go to the EC2 service, find the 500GB EBS Volume attached to the Archivematica EC2 instance, modify the EBS Volume properties, and change the Throughput value to 1000. This will increase disk read/write throughput to 1000MB/sec.
