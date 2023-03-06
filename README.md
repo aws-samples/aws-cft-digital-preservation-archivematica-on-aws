@@ -122,7 +122,7 @@ sudo -u archivematica bash -c " \
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 ## License
-This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE.txt) file.
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
 
 ## References
 - [Archivematica Documentation](https://www.archivematica.org/en/docs/archivematica-1.13/)
