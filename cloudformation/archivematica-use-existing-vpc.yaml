@@ -371,6 +371,7 @@
               Encrypted: true
               VolumeSize: 10
               VolumeType: "gp3"
+        DisableApiTermination: true
         IamInstanceProfile: 
           Ref: "ArchivematicaEC2InstanceInstanceProfileDE708029"
         ImageId: 
