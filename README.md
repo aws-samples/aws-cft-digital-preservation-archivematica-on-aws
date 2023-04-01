@@ -99,7 +99,7 @@ sudo -u archivematica bash -c " \
         - **Secret Access Key**: Leave Blank
         - **S3 Endpoint URL**: https://s3.amazonaws.com
         - **Region**: Use Current Region (e.g. us-west-2)
-        - **S3 Bucket**: archivematica-111111111111-dev (change 111111111111 to your AWS Account ID)
+        - **S3 Bucket**: Use the S3 Bucket Name you specified in the CloudFormation Template's Parameters
     - ***Storage Location Configuration (AIP Storage) - This Location should be created under the Amazon S3 Storage Space.***
         - **Purpose**: AIP Storage
         - **Relative Path**: /aip_storage/ - This should point to the AIP Storage folder in the S3 Bucket.
