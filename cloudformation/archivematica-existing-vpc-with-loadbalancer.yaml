@@ -421,7 +421,7 @@
             - "ami"
         InstanceType: "c6i.2xlarge"
         LaunchTemplate: 
-          LaunchTemplateName: "ArchivematicaStackExistingVpcArchivematica2EC2InstanceLaunchTemplateF1928967"
+          LaunchTemplateName: "ArchivematicaStackExistingVpcArchivematicaEC2InstanceLaunchTemplateF1928967"
           Version: 
             Fn::GetAtt: 
               - "ArchivematicaEC2InstanceLaunchTemplateCA6FDC56"
