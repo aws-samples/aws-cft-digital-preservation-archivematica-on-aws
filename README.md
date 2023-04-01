@@ -59,8 +59,8 @@ Up to 90 minutes to complete the installation and configuration of Archivematica
 
 ### Install via CloudFormation Template
 1. Download the appropriate CloudFormation Template for your environment:
-    - To deploy in an existing VPC: [archivematica-use-existing-vpc](/cloudformation/archivematica-use-existing-vpc.yaml)
-    - To deploy a net-new VPC: [archivematica-create-new-vpc](/cloudformation/archivematica-create-new-vpc.yaml)
+    - Use [this](/cloudformation/archivematica-existing-vpc-with-loadbalancer.yaml) CloudFormation Template to deploy in an existing VPC. 
+    - Use [this](/cloudformation/archivematica-new-vpc-with-public-alb.yaml)  CloudFormation Template to deploy in a net-new VPC with a Public Load Balancer.
 2. Log into your AWS Account and navigate to the CloudFormation Console.
 3. Create and deploy a New Stack using the CloudFormation Template.
 4. The CloudFormation Stack takes approximately 5 minutes to deploy the AWS infrastructure. It can take up to 40 minutes to fully bootstrap the EC2 instance with the Archivematica software. A /tmp/bootstrap_complete file will be created when the bootstrap is complete. You can proceed to the Archivematica Configuration section while the instance is being bootstrapped.
