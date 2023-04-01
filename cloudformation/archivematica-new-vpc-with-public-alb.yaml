@@ -8,7 +8,6 @@
       Type: String
       Default: "archivematica"
       Description: "Enter a unique alias for the KMS Key that will be used to encrypt the data."
-    ApplicationLoadBalancerScheme:
   Metadata:
     AWS::CloudFormation::Interface:
       ParameterGroups:

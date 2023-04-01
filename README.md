@@ -29,6 +29,7 @@ Institutions who would like to understand how AWS can help enable innovation and
 - `1` EC2 Linux Instance - CentOS 7 on c6i.2xlarge - 8 vCPU/16 GB RAM (Archivematica Services)
 - `4` EC2 EBS Volumes - `Root Volume` (10 GB GP3 SSD), `MySQL Volume` (10 GB GP3 SSD), `Elasticsearch Volume` (10 GB GP3 SSD), `Archivematica Data Volume` (500 GB GP3 SSD/16000 IOPS/125 Mbps Throughput)
     - NOTE: The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
+    - Disk IOPs and Throughput directly affect the speed at which Archivematica can process files. The configuration instructions will have you change the Disk Throughput on this volume to 1000 Mbps.
 
 ## Estimated Costs
 You are responsible for the cost of the AWS services used while running this solution. As of `February 2023`, the monthly cost for running this in the US East (N. Virginia) Region with 25TB of Amazon S3 Standard and 100TB of Amazon S3 Glacier Instant Retrieval object storage is approximately $1,557.02 USD. Object storage costs will vary based on the total size of the collections being archived into Amazon S3. Amazon EC2 costs can be reduced by using a smaller instance size with less vCPU and less memory, and stopping the EC2 instance when its not in use. As additional AWS services and workloads are deployed, the cost will increase. 
