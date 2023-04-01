@@ -117,6 +117,7 @@ sudo -u archivematica bash -c " \
 
 ### Destroy Environment (CFT)
 - Empty the S3 Bucket created by the CloudFormation Template.
+- Disable Termination Protection on the Archivematica EC2 Instance.
 - Delete the CloudFormation Stack from the AWS CloudFormation Console.
 
 ## Security
