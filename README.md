@@ -21,18 +21,18 @@ Institutions who would like to understand how AWS can help enable innovation and
 
 ## Deployed Resources
 
-- `1` (S3 Bucket)[https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-buckets-s3.html] (S3 Standard + Bucket Policy)
-- `1` (KMS Key)[https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#kms_keys] used for S3 Bucket and EBS Volume encryption
-- `1` (Internet Gateway)[https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html] (IGW) + `2` (Network Address Translation Gateway)[https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html] (NAT GW) + `2` (Public Subnets)[https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html] + `2` (Private Subnets)[https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html] + `1` (Private S3 VPC Endpoint)[https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/what-are-vpc-endpoints.html] + `2` (Network Security Groups)[https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html] (Application Load Balancer + EC2 Instance)
-- `1` (Application Load Balancer)[https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html] + `2` (Target Groups)[https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html] + `2` (HTTP Listeners)[https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html]
-- `1` (IAM Role)[https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html] (Archivematica Server's access to S3 Bucket and Systems Manager)
-- `1` (EC2 Linux Instance)[https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html] - CentOS 7 on c6i.2xlarge - 8 vCPU/16 GB RAM (Archivematica Services)
-- `4` (EC2 EBS Volumes)[https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volumes.html] 
+- `1` [S3 Bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-buckets-s3.html) (S3 Standard + Bucket Policy)
+- `1` [KMS Key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#kms_keys) used for S3 Bucket and EBS Volume encryption
+- `1` [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) (IGW) + `2` (Network Address Translation Gateway)[https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html] (NAT GW) + `2` [Public Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html) + `2` [Private Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html) + `1` [Private S3 VPC Endpoint](https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/what-are-vpc-endpoints.html) + `2` [Network Security Groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) (Application Load Balancer + EC2 Instance)
+- `1` [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html) + `2` [Target Groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html) + `2` [HTTP Listeners](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html)
+- `1` [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) (Archivematica Server's access to S3 Bucket and Systems Manager)
+- `1` [EC2 Linux Instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) - CentOS 7 on [c6i.2xlarge](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html) - 8 vCPU/16 GB RAM (Archivematica Services)
+- `4` [EC2 EBS Volumes](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volumes.html) 
     - `Root Volume` (10 GB GP3 SSD)
     - `MySQL Volume` (10 GB GP3 SSD)
     - `Elasticsearch Volume` (10 GB GP3 SSD)
     - `Archivematica Data Volume` (500 GB GP3 SSD/16000 IOPS/125 Mbps Throughput)
-        - NOTE: The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
+        - The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
         - Disk IOPs and Throughput directly affect the speed at which Archivematica can process files. The configuration instructions will have you change the Disk Throughput on this volume to 1000 Mbps.
 
 ## Estimated Costs
