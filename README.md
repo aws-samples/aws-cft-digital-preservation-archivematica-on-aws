@@ -20,13 +20,18 @@ Institutions who would like to understand how AWS can help enable innovation and
 ![Archivematica Reference Architecture](assets/archivematica-ref-arch-ec2-single.png "Archivematica Reference Architecture")
 
 ## Deployed Resources
+Networking resources will not be deployed if you use [this](/cloudformation/archivematica-existing-vpc-with-loadbalancer.yaml) CloudFormation Template to deploy inside of an existing VPC.
 
-- `1` [S3 Bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-buckets-s3.html) (S3 Standard + Bucket Policy)
+### Security
 - `1` [KMS Key](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#kms_keys) used for S3 Bucket and EBS Volume encryption
-- `1` [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) (IGW) + `2` [Network Address Translation Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) (NAT GW) + `2` [Public Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html) + `2` [Private Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html) + `1` [Private S3 VPC Endpoint](https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/what-are-vpc-endpoints.html) + `2` [Network Security Groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) (Application Load Balancer + EC2 Instance)
-- `1` [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html) + `2` [Target Groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html) + `2` [HTTP Listeners](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html)
 - `1` [IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html) (Archivematica Server's access to S3 Bucket and Systems Manager)
+- `2` [Network Security Groups](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html) (Application Load Balancer + EC2 Instance)
+- `1` [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
+    - `2` [Target Groups](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html)
+    - `2` [HTTP Listeners](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html) 
+### Compute
 - `1` [EC2 Linux Instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) - CentOS 7 on [c6i.2xlarge](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html) - 8 vCPU/16 GB RAM (Archivematica Services)
+### Block Storage
 - `4` [EC2 EBS Volumes](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-volumes.html) 
     - `Root Volume` (10 GB GP3 SSD)
     - `MySQL Volume` (10 GB GP3 SSD)
@@ -34,6 +39,14 @@ Institutions who would like to understand how AWS can help enable innovation and
     - `Archivematica Data Volume` (500 GB GP3 SSD/16000 IOPS/1000 Mbps Throughput)
         - The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
         - Disk IOPs and Throughput directly affect the speed at which Archivematica can process files. The configuration instructions will have you change the Disk Throughput on this volume to 1000 Mbps.
+### Object Storage
+- `1` [S3 Bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-buckets-s3.html) (S3 Standard + Bucket Policy)
+### Networking
+- `1` [Internet Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) (IGW) 
+- `2` [Network Address Translation Gateway](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) (NAT GW) 
+- `2` [Public Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html) 
+- `2` [Private Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html)
+- `1` [Private S3 VPC Endpoint](https://docs.aws.amazon.com/whitepapers/latest/aws-privatelink/what-are-vpc-endpoints.html)
 
 ## Estimated Costs
 You are responsible for the cost of the AWS services used while running this solution. As of `February 2023`, the monthly cost for running this in the US East (N. Virginia) Region with 25TB of Amazon S3 Standard and 100TB of Amazon S3 Glacier Instant Retrieval object storage is approximately $1,557.02 USD. Object storage costs will vary based on the total size of the collections being archived into Amazon S3. Amazon EC2 costs can be reduced by using a smaller instance size with less vCPU and less memory, and stopping the EC2 instance when its not in use. As additional AWS services and workloads are deployed, the cost will increase. 
