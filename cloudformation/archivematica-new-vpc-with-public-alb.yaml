@@ -55,7 +55,13 @@
     ArchivematicaKMSKeyAliasAC2E027F: 
       Type: "AWS::KMS::Alias"
       Properties: 
-        AliasName: "alias/archivematica"
+        AliasName: 
+          Fn::Join:
+            - ""
+            -
+              - "alias/"
+              -
+                Ref: KMSKeyAlias
         TargetKeyId: 
           Fn::GetAtt: 
             - "ArchivematicaKMSKey7855211A"
@@ -75,13 +81,7 @@
                     - "ArchivematicaKMSKey7855211A"
                     - "Arn"
                 SSEAlgorithm: "aws:kms"
-        BucketName: 
-          Fn::Join: 
-            - ""
-            - 
-              - "archivematica-"
-              - 
-                Ref: "AWS::AccountId"
+        BucketName: !Ref AIPStorageBucketName
         PublicAccessBlockConfiguration: 
           BlockPublicAcls: true
           BlockPublicPolicy: true
