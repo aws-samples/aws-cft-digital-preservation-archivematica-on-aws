@@ -31,7 +31,7 @@ Institutions who would like to understand how AWS can help enable innovation and
     - `Root Volume` (10 GB GP3 SSD)
     - `MySQL Volume` (10 GB GP3 SSD)
     - `Elasticsearch Volume` (10 GB GP3 SSD)
-    - `Archivematica Data Volume` (500 GB GP3 SSD/16000 IOPS/125 Mbps Throughput)
+    - `Archivematica Data Volume` (500 GB GP3 SSD/16000 IOPS/1000 Mbps Throughput)
         - The Archivematica Data Volume must be 4x larger than the largest AIP that will be created. A 500 GB Data Volume will support the creation of 120 GB AIPs.
         - Disk IOPs and Throughput directly affect the speed at which Archivematica can process files. The configuration instructions will have you change the Disk Throughput on this volume to 1000 Mbps.
 
