@@ -6,7 +6,7 @@ Archivematica provides an integrated suite of free and open-source tools that al
 
 The CloudFormation Templates in this repository deploy Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a Well-Architected AWS environment. This repository also contains instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
 
-Institutions who would like to understand how AWS can help enable innovation and transformation or who have questions about this solution should [reach out to their AWS representatives](https://aws.amazon.com/government-education/contact/?trkCampaign=ps&trk=ps_blog_body). Please note that AWS does not provide Archivematica-related services or support.
+Institutions who would like to understand how AWS can help enable innovation and transformation or who have questions about this solution should [reach out to their AWS representatives](https://aws.amazon.com/government-education/contact/?trkCampaign=ps&trk=archivematica_github_repo). Please note that AWS does not provide Archivematica-related services or support.
 
 ## Security Disclaimer
 
