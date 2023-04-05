@@ -2,10 +2,11 @@
 ## Archivematica on AWS
 
 ## Overview
-Archivematica provides an integrated suite of free and open-source tools that allows users to process digital objects from ingest to archival storage and access in compliance with the ISO-OAIS functional model and other digital preservation standards and best practices. All of the Archivematica code and documentation is released under AGPL and Creative Commons open-source licenses.
+Archivematica provides an integrated suite of free and open-source tools that allows users to process digital objects from ingest to archival storage and access in compliance with the [ISO-OAIS functional model](https://www.oclc.org/research/publications/2000/lavoie-oais.html) and other digital preservation standards and best practices. All of the Archivematica code and documentation is released under AGPL and Creative Commons open-source licenses.
 
-The CloudFormation Templates in this repository deploy Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a Well-Architected AWS environment. This repository also contains instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
+The [CloudFormation Templates](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html) in this repository deploy Archivematica 1.13.2 on a CentOS7 EC2 instance inside of a [Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) AWS environment. This repository also contains instructions on configuring backend S3 storage integration with Archivematica Spaces and Locations.
 
+## Contact AWS
 Institutions who would like to understand how AWS can help enable innovation and transformation or who have questions about this solution should [reach out to their AWS representatives](https://aws.amazon.com/government-education/contact/?trkCampaign=ps&trk=archivematica_github_repo). Please note that AWS does not provide Archivematica-related services or support.
 
 ## Security Disclaimer
@@ -130,11 +131,14 @@ sudo -u archivematica bash -c " \
         - **Enabled**: True
         - **Set as global default location for its purpose**: True
 
+## Additional Tasks
+- [Configure a S3 Lifecycle Policy](https://docs.aws.amazon.com/AmazonS3/latest/userguide/how-to-set-lifecycle-configuration-intro.html) to automatically transition objects stored in the S3 Bucket to the [S3 Glacier Instant Retrieval](https://aws.amazon.com/s3/storage-classes/glacier/instant-retrieval/) storage class.
+
 ## Cleaning Up
 
 ### Destroy Environment (CFT)
-- Empty the S3 Bucket created by the CloudFormation Template.
-- Disable Termination Protection on the Archivematica EC2 Instance.
+- [Empty the S3 Bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/empty-bucket.html) created by the CloudFormation Template.
+- [Disable Termination Protection](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html#Using_ChangingDisableAPITermination) on the Archivematica EC2 Instance.
 - Delete the CloudFormation Stack from the AWS CloudFormation Console.
 
 ## Security
