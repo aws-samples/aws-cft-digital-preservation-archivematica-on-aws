@@ -70,7 +70,9 @@
         aws:cdk:path: "ArchivematicaStackNewVpc/Archivematica:KMS:Key/Alias/Resource"
     ArchivematicaS3BucketData445A27F7: 
       Type: "AWS::S3::Bucket"
-      Properties: 
+      Properties:
+        VersioningConfiguration:
+          Status: Enabled 
         BucketEncryption: 
           ServerSideEncryptionConfiguration: 
             - 
